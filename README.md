@@ -6,7 +6,7 @@
 * It will build a self-contained, executable jar, but needs network access to get dependencies.
 
 ## Running
-Use the shell script `./state` after building and it should launch service.  Then use REST client such as `curl` or `postman`.
+Use the shell script `./state-server` after building and it should launch service.  Then use REST client such as `curl` or `postman`.
 
 ## Motivation for Using Java
 * Lack of strong background in Python, so wanted to deal with app and domain not the lanuage.
