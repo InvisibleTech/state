@@ -13,6 +13,11 @@ Use the shell script `./state` after building and it should launch service.  The
 * Scala may have been too annoying for reviewers.
 * Not strong enough in Elixir yet to have used Phoenix and it seems to be the concensus that Elixir is not for crunching.
 
+## Motivation for Using arrays of primitive double
+* Speed - autoboxing in Java is time consuming.
+* Speed - accessing arrays is most often more efficient than going into Lists, which in turn require Double wrappers.
+* Gson - in order to keep the original data model, using Gson or Jackson to deserialize the border data into something llike a Point class added a bit of nasty code that wasn't centered on the service itself.  However, that said I would still consider refactoring later, by need, to add these abstractions if there was value in it beyond OO design desires.
+
 ## Most Time Spent In
 * Quickly getting up to speed on the dataset given and any concerns in how to handle it.
 * Thinking about approach and finding an algorithm I liked for the problem after looking for open source libraries for Java.  Most libraries are huge and add abstractions for which I would have used only one or two functions.  https://github.com/Esri/geometry-api-java looked most interesting.
