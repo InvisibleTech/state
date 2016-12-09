@@ -18,6 +18,10 @@ public class StateResource {
 	private static Gson GSON = new Gson();
 
 	public static void main(String[] args) {
+		// TODO - Performance improvement - if tests show it is needed. Add step
+		// to group clusters of states in convex hull - state can only belong to one. Then use centroid of
+		// convex hull and distance to test point to select states to test for
+		// containment.
 		List<State> states = State.load(StateResource.class.getResourceAsStream("/data/states.json"));
 
 		port(8080);
@@ -36,8 +40,9 @@ public class StateResource {
 			Map<String, Double> requestMap = Arrays.stream(request.body().split("&")).map(arg -> arg.split("="))
 					.collect(Collectors.toMap(p -> p[0], p -> Double.parseDouble(p[1])));
 
-			return states.stream().filter(
-					state -> GeoMath.isCoordInState(state, getCoordinateParam(requestMap, "longitude"), getCoordinateParam(requestMap, "latitude")))
+			return states.stream()
+					.filter(state -> GeoMath.isCoordInState(state, getCoordinateParam(requestMap, "longitude"),
+							getCoordinateParam(requestMap, "latitude")))
 					.limit(1).map(s -> s.state).collect(Collectors.toList());
 
 		}, GSON::toJson);
