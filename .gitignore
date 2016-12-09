@@ -1,0 +1,15 @@
+*.class
+
+/target
+
+# Package Files #
+*.jar
+*.war
+
+# Eclipse IDE Files #
+.classpath
+.project
+.settings 
+
+# OSX oddities
+.DS_Store
