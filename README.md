@@ -3,7 +3,7 @@
 * Java 8, code was built with and tested on `1.8.0_74`.
 * Maven, version used `3.3.9`
 * Build commend: `mvn clean install`
-* It will build a self-contained executable jar, but needs network access to get dependencies.
+* It will build a self-contained, executable jar, but needs network access to get dependencies.
 
 ## Running
 Use the shell script `./state` after building and it should launch service.  Then use REST client such as `curl` or `postman`.
