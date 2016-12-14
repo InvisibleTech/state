@@ -21,7 +21,8 @@ public class StateResource {
 
     public static void main(final String[] args) {
         // TODO - Performance improvement - if tests show it is needed. Add step
-        // to group clusters of states in convex hull - state can only belong to one. Then use centroid of
+        // to group clusters of states in convex hull - state can only belong to
+        // one. Then use centroid of
         // convex hull and distance to test point to select states to test for
         // containment.
         final List<State> states = State.load(StateResource.class.getResourceAsStream("/data/states.json"));
@@ -43,8 +44,9 @@ public class StateResource {
                     .collect(Collectors.toMap(p -> p[0], p -> Double.parseDouble(p[1])));
 
             return states.stream()
-                    .filter(state -> GeoMath.isCoordInState(state,
-                            new Point(getCoordinateParam(requestMap, "longitude"), getCoordinateParam(requestMap, "latitude"))))
+                    .filter(state -> StateSearch.isCoordInState(state,
+                            new Point(getCoordinateParam(requestMap, "longitude"),
+                                    getCoordinateParam(requestMap, "latitude"))))
                     .limit(1).map(s -> s.state).collect(Collectors.toList());
 
         }, GSON::toJson);

@@ -1,55 +1,21 @@
 package org.invisibletech;
 
+import java.util.List;
+
 import org.invisibletech.State.Point;
 
 public class GeoMath {
-    // Sources for the algorithm used:
-    // http://paulbourke.net/geometry/polygonmesh/#insidepoly
-    // http://stackoverflow.com/questions/4287780/detecting-whether-a-gps-coordinate-falls-within-a-polygon-on-a-map
-    //
-    // However this algorithm doesn't select points on the border as being in
-    // the state. So, added a heuristic. It is arbitrary, but if you find your
-    // point on the border, whatever state's border, that is considered first
-    // "wins".
-    //
-    // If we used the ray shooting algorithm, it has to make similarly arbitrary
-    // decisions as to points on borders. See:
-    // http://paulbourke.net/geometry/polygonmesh/#insidepoly.
-    //
-    // Reference for method:
-    // http://stackoverflow.com/questions/17692922/check-is-a-point-x-y-is-between-two-points-drawn-on-a-straight-line
-    //
-    public static boolean isCoordInState(final State state, final Point testPoint) {
-        double angle = 0.0;
-        boolean onBorder = false;
-
-        final int indexOfLastPoint = state.border.length - 1;
-
-        for (int i = 0; i < indexOfLastPoint; i++) {
-            final Point currentPoint = state.border[i];
-            final Point nextPoint = state.border[i + 1];
-
-            onBorder = onBorder || isOnBorderSegment(currentPoint, nextPoint, testPoint);
-            if (onBorder)
-                break;
-
-            angle += computeSubtendedAngle(currentPoint, nextPoint, testPoint);
-        }
-
-        return onBorder || (Math.abs(angle) >= Math.PI);
-    }
-
-    private static boolean isOnBorderSegment(final Point currentPoint, final Point nextPoint, final Point testPoint) {
+    public static boolean isOnBorderSegment(final Point currentPoint, final Point nextPoint, final Point testPoint) {
         return (distance(currentPoint, testPoint) + distance(nextPoint, testPoint)) == distance(currentPoint,
                 nextPoint);
     }
 
-    private static double distance(final Point currentPoint, final Point nextPoint) {
+    public static double distance(final Point currentPoint, final Point nextPoint) {
         return Math.sqrt(Math.pow(currentPoint.longitude - nextPoint.longitude, 2.0)
                 + Math.pow(currentPoint.latitude - nextPoint.latitude, 2.0));
     }
 
-    private static double computeSubtendedAngle(final Point currentPoint, final Point nextPoint, final Point testPoint) {
+    public static double computeSubtendedAngle(final Point currentPoint, final Point nextPoint, final Point testPoint) {
         final double y1 = currentPoint.latitude - testPoint.latitude;
         final double x1 = currentPoint.longitude - testPoint.longitude;
 
@@ -72,6 +38,44 @@ public class GeoMath {
             thetaDiff += Math.PI * 2;
 
         return thetaDiff;
+    }
+
+    public static Point computeCentroidOfPolygon(final Point[] boundary) {
+        // See https://en.wikipedia.org/wiki/Centroid#Centroid_of_polygon for
+        // formula used.
+        double areaSum = 0.0;
+        double xSum = 0.0;
+        double ySum = 0.0;
+        for (int i = 0; i < boundary.length - 1; i++) {
+            final double areaTerm = boundary[i].longitude * boundary[i + 1].latitude
+                    - boundary[i + 1].longitude * boundary[i].latitude;
+            xSum += areaTerm * (boundary[i].longitude + boundary[i + 1].longitude);
+            ySum += areaTerm * (boundary[i].latitude + boundary[i + 1].latitude);
+            areaSum += areaTerm;
+        }
+
+        final double area = areaSum * 0.5;
+
+        final double cx = (1 / (6 * area)) * xSum;
+        final double cy = (1 / (6 * area)) * ySum;
+
+        return new Point(cx, cy);
+    }
+
+    public static Point computeCentroidOfBoundingBox(final List<State> states) {
+         double minLongitude = Double.MAX_VALUE, minLatitude = Double.MAX_VALUE;
+         double maxLongitude = -Double.MAX_VALUE, maxLatitude = -Double.MAX_VALUE;
+        
+        for (final State state : states) {
+           for(final Point point: state.border) {
+               minLongitude = Math.min(minLongitude, point.longitude);
+               minLatitude = Math.min(minLatitude, point.latitude);
+                maxLongitude = Math.max(maxLongitude, point.longitude);
+                maxLatitude = Math.max(maxLatitude, point.latitude);
+           }
+        }
+        
+        return new Point((maxLongitude + minLongitude) / 2, (maxLatitude + maxLatitude) / 2);
     }
 
 }

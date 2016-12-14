@@ -26,26 +26,25 @@ public class CanComputePointContainedTest {
 
     @Test
     public void shouldReturnTrueForHarrisburgInPAFalseInOH() {
-        assertTrue("Harrisburg should be in PA.", GeoMath.isCoordInState(PENN, new Point(HBURG_LONG, HBURG_LAT)));
-        assertFalse("Harrisburg should not be in OH.", GeoMath.isCoordInState(OHIO, new Point(HBURG_LONG, HBURG_LAT)));
+        assertTrue("Harrisburg should be in PA.", StateSearch.isCoordInState(PENN, new Point(HBURG_LONG, HBURG_LAT)));
+        assertFalse("Harrisburg should not be in OH.", StateSearch.isCoordInState(OHIO, new Point(HBURG_LONG, HBURG_LAT)));
     }
 
     @Test
     public void shouldReturnFalseForTrentonInPAOrOH() {
-        assertFalse("Trenton should not be in PA.", GeoMath.isCoordInState(PENN, new Point(TRENTON_LONG, TRENTON_LAT)));
-        assertFalse("Trenton should not be in OH.", GeoMath.isCoordInState(OHIO, new Point(TRENTON_LONG, TRENTON_LAT)));
+        assertFalse("Trenton should not be in PA.", StateSearch.isCoordInState(PENN, new Point(TRENTON_LONG, TRENTON_LAT)));
+        assertFalse("Trenton should not be in OH.", StateSearch.isCoordInState(OHIO, new Point(TRENTON_LONG, TRENTON_LAT)));
     }
 
     @Test
     public void shouldReturnTrueForAllBorderPointsOfStateBeingInState() {
-        Arrays.stream(PENN.border).forEach(p -> assertTrue(p.toString(),
-                GeoMath.isCoordInState(PENN, p)));
+        Arrays.stream(PENN.border).forEach(p -> assertTrue(p.toString(), StateSearch.isCoordInState(PENN, p)));
     }
 
     @Test
     public void shouldReturnTrueForPointInPAFalseInOH() {
-        assertTrue("Point should be in PA.", GeoMath.isCoordInState(PENN, new Point(PA_TEST_LONG, PA_TEST_LAT)));
-        assertFalse("Point should not be in OH.", GeoMath.isCoordInState(OHIO, new Point(PA_TEST_LONG, PA_TEST_LAT)));
+        assertTrue("Point should be in PA.", StateSearch.isCoordInState(PENN, new Point(PA_TEST_LONG, PA_TEST_LAT)));
+        assertFalse("Point should not be in OH.", StateSearch.isCoordInState(OHIO, new Point(PA_TEST_LONG, PA_TEST_LAT)));
     }
 
 }
