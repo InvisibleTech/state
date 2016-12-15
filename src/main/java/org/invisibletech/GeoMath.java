@@ -1,7 +1,5 @@
 package org.invisibletech;
 
-import java.util.List;
-
 import org.invisibletech.State.Point;
 
 public class GeoMath {
@@ -61,21 +59,4 @@ public class GeoMath {
 
         return new Point(cx, cy);
     }
-
-    public static Point computeCentroidOfBoundingBox(final List<State> states) {
-         double minLongitude = Double.MAX_VALUE, minLatitude = Double.MAX_VALUE;
-         double maxLongitude = -Double.MAX_VALUE, maxLatitude = -Double.MAX_VALUE;
-        
-        for (final State state : states) {
-           for(final Point point: state.border) {
-               minLongitude = Math.min(minLongitude, point.longitude);
-               minLatitude = Math.min(minLatitude, point.latitude);
-                maxLongitude = Math.max(maxLongitude, point.longitude);
-                maxLatitude = Math.max(maxLatitude, point.latitude);
-           }
-        }
-        
-        return new Point((maxLongitude + minLongitude) / 2, (maxLatitude + maxLatitude) / 2);
-    }
-
 }

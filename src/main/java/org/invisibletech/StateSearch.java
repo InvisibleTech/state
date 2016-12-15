@@ -23,21 +23,24 @@ public class StateSearch {
     public static boolean isCoordInState(final State state, final Point testPoint) {
         double angle = 0.0;
         boolean onBorder = false;
-    
+
         final int indexOfLastPoint = state.border.length - 1;
         // TODO Consider moving the geometry logic out to GeoMath.
-
         for (int i = 0; i < indexOfLastPoint; i++) {
             final Point currentPoint = state.border[i];
             final Point nextPoint = state.border[i + 1];
-    
+
             onBorder = onBorder || GeoMath.isOnBorderSegment(currentPoint, nextPoint, testPoint);
             if (onBorder)
                 break;
-    
+
             angle += GeoMath.computeSubtendedAngle(currentPoint, nextPoint, testPoint);
         }
-    
+
         return onBorder || (Math.abs(angle) >= Math.PI);
+    }
+
+    public static boolean mightCoordBeInState(final StateCluster cluster, final Point testPoint) {
+        return cluster.alignedBoundingBox.pointContainedByRect(testPoint);
     }
 }

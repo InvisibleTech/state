@@ -14,18 +14,15 @@ import org.invisibletech.State.Point;
 
 import com.google.gson.Gson;
 
+import spark.Request;
 import spark.Response;
 
 public class StateResource {
     private static Gson GSON = new Gson();
 
     public static void main(final String[] args) {
-        // TODO - Performance improvement - if tests show it is needed. Add step
-        // to group clusters of states in convex hull - state can only belong to
-        // one. Then use centroid of
-        // convex hull and distance to test point to select states to test for
-        // containment.
         final List<State> states = State.load(StateResource.class.getResourceAsStream("/data/states.json"));
+        final List<StateCluster> clusteredStates = StateCluster.clusterStates(8, states);
 
         port(8080);
 
@@ -40,14 +37,10 @@ public class StateResource {
         post("/", (request, response) -> {
             response.type("application/json");
 
-            final Map<String, Double> requestMap = Arrays.stream(request.body().split("&")).map(arg -> arg.split("="))
-                    .collect(Collectors.toMap(p -> p[0], p -> Double.parseDouble(p[1])));
-
-            return states.stream()
-                    .filter(state -> StateSearch.isCoordInState(state,
-                            new Point(getCoordinateParam(requestMap, "longitude"),
-                                    getCoordinateParam(requestMap, "latitude"))))
+            return states.stream().filter(state -> StateSearch.isCoordInState(state, parseTestPointOut(request)))
                     .limit(1).map(s -> s.state).collect(Collectors.toList());
+
+        }, GSON::toJson);
 
         post("/fast", (request, response) -> {
             response.type("application/json");
@@ -59,6 +52,15 @@ public class StateResource {
                     .map(s -> s.state)
                     .collect(Collectors.toList());
         }, GSON::toJson);
+    }
+
+    private static Point parseTestPointOut(final Request request) {
+        final Map<String, Double> requestMap = Arrays.stream(request.body().split("&")).map(arg -> arg.split("="))
+                .collect(Collectors.toMap(p -> p[0], p -> Double.parseDouble(p[1])));
+
+        final Point testPoint = new Point(getCoordinateParam(requestMap, "longitude"),
+                getCoordinateParam(requestMap, "latitude"));
+        return testPoint;
     }
 
     private static void invalidArgument(final Exception exception, final Response response) {
