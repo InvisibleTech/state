@@ -49,6 +49,15 @@ public class StateResource {
                                     getCoordinateParam(requestMap, "latitude"))))
                     .limit(1).map(s -> s.state).collect(Collectors.toList());
 
+        post("/fast", (request, response) -> {
+            response.type("application/json");
+            
+            // TODO Look at refactoring the business logic out into StateSearch.
+            final Point testPoint = parseTestPointOut(request);
+            return clusteredStates.stream().filter(c -> StateSearch.mightCoordBeInState(c, testPoint))
+                    .flatMap(c -> c.members.stream()).filter(s -> StateSearch.isCoordInState(s, testPoint)).limit(1)
+                    .map(s -> s.state)
+                    .collect(Collectors.toList());
         }, GSON::toJson);
     }
 

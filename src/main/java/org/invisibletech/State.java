@@ -23,6 +23,8 @@ public class State {
     private static final int LAT_INDEX = 1;
 
     public static class Point {
+        // TODO think about making this a hierarchy with a GeoPoint Subclass for
+        // readability or maybe look at what that Java package offers.
         public final double longitude;
         public final double latitude;
 

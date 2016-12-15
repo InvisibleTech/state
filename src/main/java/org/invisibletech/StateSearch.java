@@ -25,7 +25,8 @@ public class StateSearch {
         boolean onBorder = false;
     
         final int indexOfLastPoint = state.border.length - 1;
-    
+        // TODO Consider moving the geometry logic out to GeoMath.
+
         for (int i = 0; i < indexOfLastPoint; i++) {
             final Point currentPoint = state.border[i];
             final Point nextPoint = state.border[i + 1];
