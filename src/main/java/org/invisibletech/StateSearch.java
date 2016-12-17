@@ -40,7 +40,7 @@ public class StateSearch {
         return onBorder || (Math.abs(angle) >= Math.PI);
     }
 
-    public static boolean mightCoordBeInState(final StateCluster cluster, final Point testPoint) {
+    public static boolean mightCoordBeInMemberState(final StateCluster cluster, final Point testPoint) {
         return cluster.alignedBoundingBox.pointContainedByRect(testPoint);
     }
 }

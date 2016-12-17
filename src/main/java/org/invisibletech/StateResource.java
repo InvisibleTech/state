@@ -47,7 +47,7 @@ public class StateResource {
             
             // TODO Look at refactoring the business logic out into StateSearch.
             final Point testPoint = parseTestPointOut(request);
-            return clusteredStates.stream().filter(c -> StateSearch.mightCoordBeInState(c, testPoint))
+            return clusteredStates.stream().filter(c -> StateSearch.mightCoordBeInMemberState(c, testPoint))
                     .flatMap(c -> c.members.stream()).filter(s -> StateSearch.isCoordInState(s, testPoint)).limit(1)
                     .map(s -> s.state)
                     .collect(Collectors.toList());
